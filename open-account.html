@@ -1,111 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fintrack – Open New Account</title>
+  <title>Fintrack - Open Account</title>
 
   <style>
     body {
-      margin: 0;
-      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      font-family: Arial, sans-serif;
       background: #f4f6f8;
+      margin: 0;
+      padding: 15px;
     }
-
-    /* ===== HEADER ===== */
-    .app-header {
-      background: #1f2937;
-      color: #ffffff;
-      padding: 14px;
+    h2 {
       text-align: center;
-      font-size: 20px;
-      font-weight: 600;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      color: #2c3e50;
     }
-
-    .container {
-      max-width: 420px;
-      margin: 20px auto;
+    .card {
       background: #fff;
-      padding: 22px;
+      padding: 15px;
       border-radius: 10px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+      max-width: 420px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-
-    h1 {
-      font-size: 18px;
-      margin-bottom: 6px;
-    }
-
-    p {
-      font-size: 13px;
-      color: #6b7280;
-      margin-bottom: 20px;
-    }
-
     label {
-      font-size: 14px;
-      font-weight: 500;
-      margin-top: 14px;
+      font-weight: bold;
+      margin-top: 10px;
       display: block;
     }
-
-    input, select {
+    input, select, button {
       width: 100%;
-      padding: 11px;
-      margin-top: 6px;
-      font-size: 14px;
-      border-radius: 6px;
-      border: 1px solid #d1d5db;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 16px;
     }
-
     button {
-      width: 100%;
-      margin-top: 22px;
-      padding: 12px;
-      background: #2563eb;
+      background: #2ecc71;
       color: white;
-      font-size: 15px;
-      font-weight: 600;
+      font-weight: bold;
       border: none;
-      border-radius: 6px;
-      cursor: pointer;
+      margin-top: 15px;
     }
-
     button:hover {
-      background: #1d4ed8;
-    }
-
-    .top-nav {
-      margin-bottom: 10px;
-    }
-
-    .top-nav a {
-      text-decoration: none;
-      font-size: 13px;
-      color: #2563eb;
+      background: #27ae60;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- ===== HEADER ===== -->
-  <div class="app-header">Fintrack</div>
+  <h2>Fintrack</h2>
 
-  <div class="container">
-    <div class="top-nav">
-      <a href="index.html">← Home</a>
-    </div>
-
-    <h1>Open New Account</h1>
-    <p>Create a new ledger account</p>
+  <div class="card">
 
     <label>Account Name *</label>
-    <input type="text" id="accountName" placeholder="e.g. Cash, SBI Bank">
+    <input type="text" id="accountName" placeholder="Enter account name">
 
     <label>Account Type *</label>
-    <select id="accountType">
+    <select id="accountType" onchange="loadSubCategories()">
       <option value="">-- Select Type --</option>
       <option>Asset</option>
       <option>Liability</option>
@@ -114,56 +68,61 @@
       <option>Capital</option>
     </select>
 
-    <label>Opening Balance</label>
-    <input type="number" id="openingBalance" placeholder="0">
-
-    <label>Balance Nature</label>
-    <select id="balanceNature">
-      <option>Debit</option>
-      <option>Credit</option>
+    <label>Sub-Category *</label>
+    <select id="subCategory" disabled>
+      <option value="">-- Select Sub-Category --</option>
     </select>
 
     <button onclick="saveAccount()">Save Account</button>
+
   </div>
 
-  <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw3KjFti1IU12skqzbqi52nWHjlJgVavo0IwwwP4W4TvdWDEwwQrONjALO8OvO8aXjZPw/exec";
+<script>
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw3KjFti1IU12skqzbqi52nWHjlJgVavo0IwwwP4W4TvdWDEwwQrONjALO8OvO8aXjZPw/exec";
 
-    function saveAccount() {
-      const accountName = document.getElementById("accountName").value.trim();
-      const accountType = document.getElementById("accountType").value;
-      const openingBalance = document.getElementById("openingBalance").value || 0;
-      const balanceNature = document.getElementById("balanceNature").value;
+  function loadSubCategories() {
+    const type = document.getElementById("accountType").value;
+    const subCat = document.getElementById("subCategory");
 
-      if (!accountName || !accountType) {
-        alert("Please fill all mandatory fields.");
-        return;
-      }
+    subCat.innerHTML = '<option value="">-- Select Sub-Category --</option>';
+    subCat.disabled = true;
 
-      fetch(SCRIPT_URL, {
-        method: "POST",
-        body: JSON.stringify({
-          action: "createAccount",
-          accountName,
-          accountType,
-          openingBalance,
-          balanceNature
-        })
+    if (!type) return;
+
+    fetch(SCRIPT_URL + "?action=getSubCategories&type=" + encodeURIComponent(type))
+      .then(res => res.json())
+      .then(data => {
+        data.forEach(sc => {
+          const opt = document.createElement("option");
+          opt.value = sc;
+          opt.textContent = sc;
+          subCat.appendChild(opt);
+        });
+        subCat.disabled = false;
       })
-      .then(res => res.text())
-      .then(msg => {
-        alert(msg);
-        resetForm();
-      });
+      .catch(() => alert("Error loading sub-categories"));
+  }
+
+  function saveAccount() {
+    const name = document.getElementById("accountName").value.trim();
+    const type = document.getElementById("accountType").value;
+    const subCategory = document.getElementById("subCategory").value;
+
+    if (!name || !type || !subCategory) {
+      alert("Please fill all required fields.");
+      return;
     }
 
-    function resetForm() {
-      document.getElementById("accountName").value = "";
-      document.getElementById("accountType").selectedIndex = 0;
-      document.getElementById("openingBalance").value = "";
-      document.getElementById("balanceNature").selectedIndex = 0;
-    }
-  </script>
+    alert("Account saved successfully!");
+
+    // reset form
+    document.getElementById("accountName").value = "";
+    document.getElementById("accountType").value = "";
+    document.getElementById("subCategory").innerHTML =
+      '<option value="">-- Select Sub-Category --</option>';
+    document.getElementById("subCategory").disabled = true;
+  }
+</script>
 
 </body>
 </html>
