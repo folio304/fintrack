@@ -1,1 +1,127 @@
-index
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accounting Dashboard</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background-color: #f4f6f8;
+      color: #333;
+    }
+
+    .container {
+      max-width: 420px;
+      margin: 40px auto;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+      padding: 24px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .header h1 {
+      font-size: 20px;
+      margin: 0;
+      color: #1f2937;
+    }
+
+    .header p {
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 6px;
+    }
+
+    label {
+      font-size: 14px;
+      font-weight: 500;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    select {
+      width: 100%;
+      padding: 12px;
+      font-size: 14px;
+      border-radius: 6px;
+      border: 1px solid #d1d5db;
+      background-color: #fff;
+      margin-bottom: 20px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #1d4ed8;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: #9ca3af;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h1>Accounting System</h1>
+      <p>Select an action to continue</p>
+    </div>
+
+    <label for="actionSelect">Choose Action</label>
+    <select id="actionSelect">
+      <option value="">-- Select --</option>
+      <option value="journal">Journal Entry</option>
+      <option value="account">Open New Account</option>
+      <option value="ledger">View Ledger</option>
+    </select>
+
+    <button onclick="applyAction()">Apply</button>
+
+    <div class="footer">
+      Internal Use Only
+    </div>
+  </div>
+
+  <script>
+    function applyAction() {
+      const action = document.getElementById("actionSelect").value;
+
+      if (!action) {
+        alert("Please select an action.");
+        return;
+      }
+
+      if (action === "journal") {
+        window.location.href = "journal-entry.html";
+      } else if (action === "account") {
+        window.location.href = "open-account.html";
+      } else if (action === "ledger") {
+        window.location.href = "view-ledger.html";
+      }
+    }
+  </script>
+
+</body>
+</html>
