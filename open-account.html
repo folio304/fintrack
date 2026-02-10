@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fintrack – Open New Account</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background: #f4f6f8;
+    }
+
+    /* ===== HEADER ===== */
+    .app-header {
+      background: #1f2937;
+      color: #ffffff;
+      padding: 14px;
+      text-align: center;
+      font-size: 20px;
+      font-weight: 600;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    .container {
+      max-width: 420px;
+      margin: 20px auto;
+      background: #fff;
+      padding: 22px;
+      border-radius: 10px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    }
+
+    h1 {
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+
+    p {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-size: 14px;
+      font-weight: 500;
+      margin-top: 14px;
+      display: block;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 11px;
+      margin-top: 6px;
+      font-size: 14px;
+      border-radius: 6px;
+      border: 1px solid #d1d5db;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 22px;
+      padding: 12px;
+      background: #2563eb;
+      color: white;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    .top-nav {
+      margin-bottom: 10px;
+    }
+
+    .top-nav a {
+      text-decoration: none;
+      font-size: 13px;
+      color: #2563eb;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <div class="app-header">Fintrack</div>
+
+  <div class="container">
+    <div class="top-nav">
+      <a href="index.html">← Home</a>
+    </div>
+
+    <h1>Open New Account</h1>
+    <p>Create a new ledger account</p>
+
+    <label>Account Name *</label>
+    <input type="text" id="accountName" placeholder="e.g. Cash, SBI Bank">
+
+    <label>Account Type *</label>
+    <select id="accountType">
+      <option value="">-- Select Type --</option>
+      <option>Asset</option>
+      <option>Liability</option>
+      <option>Income</option>
+      <option>Expense</option>
+      <option>Capital</option>
+    </select>
+
+    <label>Opening Balance</label>
+    <input type="number" id="openingBalance" placeholder="0">
+
+    <label>Balance Nature</label>
+    <select id="balanceNature">
+      <option>Debit</option>
+      <option>Credit</option>
+    </select>
+
+    <button onclick="saveAccount()">Save Account</button>
+  </div>
+
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw3KjFti1IU12skqzbqi52nWHjlJgVavo0IwwwP4W4TvdWDEwwQrONjALO8OvO8aXjZPw/exec";
+
+    function saveAccount() {
+      const accountName = document.getElementById("accountName").value.trim();
+      const accountType = document.getElementById("accountType").value;
+      const openingBalance = document.getElementById("openingBalance").value || 0;
+      const balanceNature = document.getElementById("balanceNature").value;
+
+      if (!accountName || !accountType) {
+        alert("Please fill all mandatory fields.");
+        return;
+      }
+
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "createAccount",
+          accountName,
+          accountType,
+          openingBalance,
+          balanceNature
+        })
+      })
+      .then(res => res.text())
+      .then(msg => {
+        alert(msg);
+        resetForm();
+      });
+    }
+
+    function resetForm() {
+      document.getElementById("accountName").value = "";
+      document.getElementById("accountType").selectedIndex = 0;
+      document.getElementById("openingBalance").value = "";
+      document.getElementById("balanceNature").selectedIndex = 0;
+    }
+  </script>
+
+</body>
+</html>
